@@ -64,7 +64,7 @@ Dev C++、Visual Studio 是 **IDE**，VSCode 是**编辑器**。
 
 怎么装编译器最省事？用**包管理器**。
 
-关于 `choco`（Chocolatey）怎么安装，大家可以去看 [OpenCode 安装教程](opencode-install-tutorial.html)，那篇里我详细写了 `choco` 的安装步骤。
+关于 `choco`（Chocolatey）怎么安装，大家可以去看 [装 OpenCode](opencode.html)，那篇里我详细写了 `choco` 的安装步骤。
 
 那 `choco` 到底是什么呢？
 
