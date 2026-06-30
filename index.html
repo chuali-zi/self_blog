@@ -52,7 +52,7 @@
   }
   .manga-tag{
     display:inline-block;background:#E11414;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:700;
-    padding:5px 14px 5px 12px;letter-spacing:0.3em;transform:skewX(-10deg);border:2px solid #000;
+    padding:5px 20px 5px 12px;letter-spacing:0.3em;transform:skewX(-10deg);border:2px solid #000;
     clip-path:polygon(0 0,100% 0,94% 100%,0 100%);
   }
   .p5-redline{
@@ -172,11 +172,11 @@
   .article-close-btn:hover{transform:skewX(-6deg) translate(-2px,-2px);box-shadow:6px 6px 0 #E11414}
   .article-close-btn span{display:inline-block;transform:skewX(6deg)}
   .article-overlay-body{
-    flex:1;overflow-y:auto;padding:36px 24px 64px;
+    flex:1;overflow-y:auto;padding:36px 20px 72px;
   }
   .article-content{
-    max-width:760px;margin:0 auto;background:#16110F;border:2px solid #3A1414;
-    box-shadow:8px 8px 0 #E11414;padding:40px 36px;font-style:normal;
+    max-width:1040px;margin:0 auto;background:#16110F;border:2px solid #3A1414;
+    box-shadow:8px 8px 0 #E11414;padding:44px clamp(20px,4vw,52px);font-style:normal;
   }
   .article-content h1,.article-content h2,.article-content h3,.article-content h4{
     font-family:'Spectral','Noto Serif SC',serif;font-weight:700;color:#F7F4EC;
@@ -185,8 +185,10 @@
   .article-content h1{font-size:clamp(26px,4vw,34px);margin-top:0;border-bottom:2px solid #3A1414;padding-bottom:12px}
   .article-content h2{font-size:clamp(20px,3vw,26px);border-left:4px solid #E11414;padding-left:12px}
   .article-content h3{font-size:18px;color:#E8DCCF}
-  .article-content p,.article-content li{color:#D8CFC4;line-height:1.75;font-size:15.5px}
-  .article-content ul,.article-content ol{padding-left:1.4em;margin:0.8em 0}
+  .article-content p,.article-content li{color:#DED5CA;line-height:1.8;font-size:16px}
+  .article-content li{margin:0.3em 0}
+  .article-content li::marker{color:#E11414}
+  .article-content ul,.article-content ol{padding-left:1.5em;margin:0.9em 0}
   .article-content a{color:#E11414;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
   .article-content a:hover{color:#FF4B4B}
   .article-content code{
@@ -203,7 +205,20 @@
     background:rgba(225,20,20,0.08);color:#B0A294;
   }
   .article-content hr{border:none;border-top:1px dashed #4A1A1A;margin:2em 0}
-  .article-content strong{color:#F0E9DF}
+  .article-content strong{color:#FF7A4D;font-weight:700}
+  .article-content em{color:#E7CDBE;font-style:italic;padding-right:0.12em}
+  .article-content mark{background:rgba(225,20,20,0.22);color:#FFD9C9;padding:1px 4px;border-radius:3px}
+  .article-content table{
+    border-collapse:collapse;margin:1.5em 0;font-size:14.5px;width:100%;
+    display:block;overflow-x:auto;border:2px solid #3A1414;box-shadow:4px 4px 0 #E11414;
+  }
+  .article-content thead th{background:#2A1413;color:#F7F4EC;font-weight:700;white-space:nowrap}
+  .article-content th,.article-content td{
+    border:1px solid #3A1414;padding:10px 14px;text-align:left;vertical-align:top;line-height:1.6;
+  }
+  .article-content td{color:#DED5CA}
+  .article-content tbody tr:nth-child(even){background:rgba(225,20,20,0.05)}
+  .article-content tbody tr:hover{background:rgba(225,20,20,0.10)}
   .article-loading{
     text-align:center;padding:80px 24px;font-family:'IBM Plex Mono',monospace;
     font-size:13px;letter-spacing:0.2em;color:#E11414;text-transform:uppercase;
@@ -438,13 +453,13 @@
   };
 
   var allReviews = [
-    { id: 'r6', subject: '专业课', title: '信安复习重点', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-review.md' },
-    { id: 'r7', subject: '专业课', title: '高分预测', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-summary.md' }
+    { id: 'r6', subject: '信息安全导论', title: '信息安全导论复习 · 重点梳理', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-review.md' },
+    { id: 'r7', subject: '信息安全导论', title: '信息安全导论复习 · 高分预测', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-summary.md' }
   ];
 
   var reviewPlaceholders = [{ id: 'p1' }];
 
-  var subjectList = ['全部', '高数', '线性代数', '程序设计', '英语', '专业课', '通识课'];
+  var subjectList = ['全部', '信息安全导论', '高数', '线性代数', '程序设计', '英语', '专业课', '通识课'];
 
   var levelTints = {
     '核心': ['#fff', '#E11414'],
@@ -494,7 +509,7 @@
   };
 
   function chipStyle(active) {
-    var base = "font-family:'IBM Plex Mono',monospace;font-style:italic;font-size:12.5px;padding:7px 16px;cursor:pointer;transition:all .15s ease;transform:skewX(-9deg);border:2px solid #000;";
+    var base = "font-family:'IBM Plex Mono',monospace;font-style:italic;font-size:12.5px;padding:7px 19px 7px 14px;cursor:pointer;transition:all .15s ease;transform:skewX(-9deg);border:2px solid #000;";
     return active
       ? base + 'background:#E11414;color:#fff;box-shadow:3px 3px 0 #000;'
       : base + 'background:#16110F;color:#C9BBAE;';
@@ -677,7 +692,7 @@
         '<span style="font-family:\'Spectral\',\'Noto Serif SC\',serif;font-weight:600;font-size:15px">' + escapeHtml(r.subject) + '</span>' +
         '<div style="display:flex;align-items:center;gap:9px;min-width:0">' +
           '<button type="button" class="star-btn" data-id="' + escapeHtml(r.id) + '" title="标记重点" style="cursor:pointer;border:none;background:transparent;font-size:16px;line-height:1;padding:0;flex-shrink:0;color:' + r.starColor + ';transition:color .15s ease">' + r.starChar + '</button>' +
-          '<span class="review-title" data-md="' + escapeHtml(r.md || '') + '" data-title="' + escapeHtml(r.title) + '" style="font-size:14.5px;color:#F0E9DF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' + (r.md ? ';cursor:pointer' : '') + '">' + escapeHtml(r.title) + '</span>' +
+          '<span class="review-title" data-md="' + escapeHtml(r.md || '') + '" data-title="' + escapeHtml(r.title) + '" style="font-size:14.5px;color:#F0E9DF;line-height:1.45;overflow-wrap:anywhere;padding-right:0.18em' + (r.md ? ';cursor:pointer' : '') + '">' + escapeHtml(r.title) + '</span>' +
         '</div>' +
         '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8E7F6F;border:1px solid #3A1414;padding:2px 8px;border-radius:6px;justify-self:start;white-space:nowrap">' + escapeHtml(r.type) + '</span>' +
         '<span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;justify-self:start;color:' + r.levelFg + ';background:' + r.levelBg + '">' + escapeHtml(r.level) + '</span>' +
