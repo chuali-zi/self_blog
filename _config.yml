@@ -1,13 +1,9 @@
-title: chuali-zi 的博客
-description: 工具安装与使用攻略
-theme: jekyll-theme-minimal
+theme: null
+plugins: []
 include:
-  - assets
   - index.html
-  - vscode-basics.html
-  - opencode.html
-  - agent.html
 exclude:
   - index.md
   - "个人Blog首页.dc (1).html"
   - .log
+  - README.md
