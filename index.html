@@ -368,7 +368,7 @@
 <div id="article-overlay" class="article-overlay" aria-hidden="true">
   <div class="article-overlay-header">
     <h2 id="article-overlay-title" class="article-overlay-title"></h2>
-    <button type="button" id="article-close-btn" class="article-close-btn"><span>← 返回教程</span></button>
+    <button type="button" id="article-close-btn" class="article-close-btn"><span>← 返回</span></button>
   </div>
   <div class="article-overlay-body">
     <div id="article-content" class="article-content"></div>
@@ -385,9 +385,10 @@
     query: '',
     noteFilter: '全部',
     subject: '全部',
-    starred: { r6: true },
+    starred: { r6: true, r7: true },
     transition: { phase: 'idle', x: 0, y: 0, color: '#E11414', label: '', en: '', target: '' },
-    articleMd: null
+    articleMd: null,
+    articleFrom: 'notes'
   };
 
   var portalList = [
@@ -437,10 +438,11 @@
   };
 
   var allReviews = [
-    { id: 'r6', subject: '专业课', title: '信息安全导论复习重点（ISIR_Review）', type: 'PDF', level: '核心', date: '06-26', action: '查看', href: 'https://github.com/chuali-zi/ISIR_Review' }
+    { id: 'r6', subject: '专业课', title: '信安复习重点', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-review.md' },
+    { id: 'r7', subject: '专业课', title: '高分预测', type: '笔记', level: '核心', date: '06-26', action: '阅读', md: 'isir-summary.md' }
   ];
 
-  var reviewPlaceholders = [{ id: 'p1' }, { id: 'p2' }, { id: 'p3' }];
+  var reviewPlaceholders = [{ id: 'p1' }];
 
   var subjectList = ['全部', '高数', '线性代数', '程序设计', '英语', '专业课', '通识课'];
 
@@ -513,6 +515,18 @@
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function findArticleTitle(md) {
+    var note = allNotes.find(function (n) { return n.md === md; });
+    if (note) return note.title;
+    var review = allReviews.find(function (r) { return r.md === md; });
+    if (review) return review.title;
+    return md;
+  }
+
+  function articleBackLabel(from) {
+    return from === 'review' ? '← 返回复习资料' : '← 返回教程';
   }
 
   function resolveMdHref(href) {
@@ -634,7 +648,7 @@
     var q = state.query;
     var reviews = allReviews.filter(function (r) {
       return (state.subject === '全部' || r.subject === state.subject) &&
-        matches(q, r.subject, r.title, r.type, r.level);
+        matches(q, r.subject, r.title, r.type, r.level, r.md);
     }).map(function (r) {
       var starred = !!state.starred[r.id];
       var level = levelTints[r.level] || ['#8E7F6F', 'rgba(225,20,20,0.14)'];
@@ -656,16 +670,19 @@
     var reviews = getFilteredReviews();
     var q = state.query;
     els.reviewsList.innerHTML = reviews.map(function (r) {
+      var actionHtml = r.md
+        ? '<button type="button" class="review-read-btn review-action" data-md="' + escapeHtml(r.md) + '" data-title="' + escapeHtml(r.title) + '" style="font-size:13px;font-weight:500;white-space:nowrap;background:none;border:none;cursor:pointer;padding:0;font-family:inherit">' + escapeHtml(r.action) + ' →</button>'
+        : '<a href="' + escapeHtml(r.href) + '" target="_blank" rel="noopener noreferrer" class="review-action" style="font-size:13px;font-weight:500;white-space:nowrap">' + escapeHtml(r.action) + ' →</a>';
       return '<div class="review-row" style="display:grid;grid-template-columns:1.1fr 2.4fr 0.9fr 0.9fr 0.8fr 0.7fr;gap:12px;padding:16px 22px;border-bottom:1px solid #2A1110;align-items:center">' +
         '<span style="font-family:\'Spectral\',\'Noto Serif SC\',serif;font-weight:600;font-size:15px">' + escapeHtml(r.subject) + '</span>' +
         '<div style="display:flex;align-items:center;gap:9px;min-width:0">' +
           '<button type="button" class="star-btn" data-id="' + escapeHtml(r.id) + '" title="标记重点" style="cursor:pointer;border:none;background:transparent;font-size:16px;line-height:1;padding:0;flex-shrink:0;color:' + r.starColor + ';transition:color .15s ease">' + r.starChar + '</button>' +
-          '<span style="font-size:14.5px;color:#F0E9DF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHtml(r.title) + '</span>' +
+          '<span class="review-title" data-md="' + escapeHtml(r.md || '') + '" data-title="' + escapeHtml(r.title) + '" style="font-size:14.5px;color:#F0E9DF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap' + (r.md ? ';cursor:pointer' : '') + '">' + escapeHtml(r.title) + '</span>' +
         '</div>' +
         '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#8E7F6F;border:1px solid #3A1414;padding:2px 8px;border-radius:6px;justify-self:start;white-space:nowrap">' + escapeHtml(r.type) + '</span>' +
         '<span style="font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;justify-self:start;color:' + r.levelFg + ';background:' + r.levelBg + '">' + escapeHtml(r.level) + '</span>' +
         '<span style="font-family:\'IBM Plex Mono\',monospace;font-size:11.5px;color:#8E7F6F">' + escapeHtml(r.date) + '</span>' +
-        '<div style="text-align:right"><a href="' + escapeHtml(r.href) + '" target="_blank" rel="noopener noreferrer" class="review-action" style="font-size:13px;font-weight:500;white-space:nowrap">' + escapeHtml(r.action) + ' →</a></div>' +
+        '<div style="text-align:right">' + actionHtml + '</div>' +
       '</div>';
     }).join('');
 
@@ -725,14 +742,17 @@
     renderReviews();
   }
 
-  function openArticle(mdFile, title) {
+  function openArticle(mdFile, title, fromSection) {
+    var from = fromSection || 'notes';
+    state.articleFrom = from;
     state.articleMd = mdFile;
     els.articleOverlay.classList.add('open');
     els.articleOverlay.setAttribute('aria-hidden', 'false');
     document.body.classList.add('article-open');
-    els.articleTitle.textContent = title || mdFile;
+    els.articleTitle.textContent = title || findArticleTitle(mdFile);
+    els.articleCloseBtn.querySelector('span').textContent = articleBackLabel(from);
     els.articleContent.innerHTML = '<div class="article-loading">Loading...</div>';
-    history.replaceState(null, '', '#notes');
+    history.replaceState(null, '', from === 'review' ? '#review' : '#notes');
 
     if (articleCache[mdFile]) {
       renderArticleHtml(articleCache[mdFile]);
@@ -770,8 +790,8 @@
       if (md) {
         a.addEventListener('click', function (e) {
           e.preventDefault();
-          var note = allNotes.find(function (n) { return n.md === md; });
-          openArticle(md, note ? note.title : md);
+          var from = allReviews.some(function (r) { return r.md === md; }) ? 'review' : 'notes';
+          openArticle(md, findArticleTitle(md), from);
         });
       } else if (href && !/^https?:\/\//i.test(href) && !href.startsWith('#') && !href.startsWith('mailto:')) {
         a.addEventListener('click', function (e) {
@@ -782,15 +802,17 @@
   }
 
   function closeArticle() {
+    var from = state.articleFrom || 'notes';
+    var targetId = from === 'review' ? 'review' : 'notes';
     state.articleMd = null;
     els.articleOverlay.classList.remove('open');
     els.articleOverlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('article-open');
     els.articleContent.innerHTML = '';
-    history.replaceState(null, '', '#notes');
-    var notesEl = document.getElementById('notes');
-    if (notesEl) {
-      var top = notesEl.getBoundingClientRect().top + window.pageYOffset - 64;
+    history.replaceState(null, '', '#' + targetId);
+    var sectionEl = document.getElementById(targetId);
+    if (sectionEl) {
+      var top = sectionEl.getBoundingClientRect().top + window.pageYOffset - 64;
       window.scrollTo({ top: top, behavior: 'smooth' });
     }
   }
@@ -824,7 +846,7 @@
     if (!card) return;
     var md = card.getAttribute('data-md');
     var note = allNotes.find(function (n) { return n.md === md; });
-    openArticle(md, note ? note.title : md);
+    openArticle(md, note ? note.title : md, 'notes');
   });
 
   els.notesGrid.addEventListener('keydown', function (e) {
@@ -834,7 +856,7 @@
     e.preventDefault();
     var md = card.getAttribute('data-md');
     var note = allNotes.find(function (n) { return n.md === md; });
-    openArticle(md, note ? note.title : md);
+    openArticle(md, note ? note.title : md, 'notes');
   });
 
   els.reviewSubjects.addEventListener('click', function (e) {
@@ -846,6 +868,16 @@
   });
 
   els.reviewsList.addEventListener('click', function (e) {
+    var readBtn = e.target.closest('.review-read-btn');
+    if (readBtn) {
+      openArticle(readBtn.getAttribute('data-md'), readBtn.getAttribute('data-title'), 'review');
+      return;
+    }
+    var titleEl = e.target.closest('.review-title');
+    if (titleEl && titleEl.getAttribute('data-md')) {
+      openArticle(titleEl.getAttribute('data-md'), titleEl.getAttribute('data-title'), 'review');
+      return;
+    }
     var btn = e.target.closest('.star-btn');
     if (!btn) return;
     var id = btn.getAttribute('data-id');

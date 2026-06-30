@@ -28,7 +28,7 @@ jobs:
         run: |
           mkdir public
           cp index.html .nojekyll public/
-          cp vscode-and-cs-basics.md opencode-install-tutorial.md ai-agent-tools-and-cc-switch.md public/
+          cp vscode-and-cs-basics.md opencode-install-tutorial.md ai-agent-tools-and-cc-switch.md isir-review.md isir-summary.md public/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
